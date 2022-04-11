@@ -44,6 +44,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation("androidx.fragment:fragment-ktx:1.3.6")
 
+    // 로딩 다이얼로그
+    implementation 'com.github.ybq:Android-SpinKit:1.4.0'
+
     // 그래프
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 

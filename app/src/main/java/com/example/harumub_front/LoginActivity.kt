@@ -15,7 +15,6 @@ import java.util.HashMap
 class LoginActivity : AppCompatActivity() {
     private lateinit var retrofitBuilder: RetrofitBuilder
     private lateinit var retrofitInterface : RetrofitInteface
-    var isExistBlank = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,16 +53,28 @@ class LoginActivity : AppCompatActivity() {
                         builder1.setMessage(result!!.name + "님 환영합니다!")
                         builder1.show()
 
-                        var intent = Intent(applicationContext, MainActivity1::class.java) // 두번째 인자에 이동할 액티비티
-                        intent.putExtra("user_id", result!!.id)
-                        intent.putExtra("user_name", result.name)
-                        startActivityForResult(intent, 0)
+                        // 서버에서 전달받은 감상결과 record=false => 메인1로 이동
+                        if(result.record == false) {
+                            var intent = Intent(applicationContext, MainActivity1::class.java)
+                            intent.putExtra("user_id", result.id)
+                            intent.putExtra("user_name", result.name)
+                            startActivityForResult(intent, 0)
+                        }
+                        // 서버에서 전달받은 감상결과 record=true => 메인2로 이동
+                         if (result.record == true) {
+                             var intent = Intent(applicationContext, MainActivity2::class.java)
+                             intent.putExtra("user_id", result.id)
+                             intent.putExtra("user_name", result.name)
+                             startActivityForResult(intent, 0)
+                         }
+                    }
+                    else if (response.code() == 400) {
+                        Toast.makeText(this@LoginActivity, "정의되지 않은 사용자", Toast.LENGTH_LONG).show()
                     }
                     else if (response.code() == 404) {
                         Toast.makeText(this@LoginActivity, "404 오류", Toast.LENGTH_LONG).show()
                     }
                 }
-
                 override fun onFailure(call: Call<LoginResult?>, t: Throwable) {
                     Toast.makeText(this@LoginActivity, t.message,
                         Toast.LENGTH_LONG).show()

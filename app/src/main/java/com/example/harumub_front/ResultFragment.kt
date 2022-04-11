@@ -47,7 +47,7 @@ class ResultFragment : Fragment() {
         // ?
         Log.d("태그", "inflater")
 
-        adapter = LogAdapter()
+        //adapter = LogAdapter()
 
         // ?
         Log.d("태그", "어댑터")
@@ -103,7 +103,7 @@ class ResultFragment : Fragment() {
 //        view.findViewById<RecyclerView>(R.id.resultpage_recycler).adapter = adapter
 
 
-        // 감상 로그 - 이모티콘으로 변경
+        // 감상 로그 - 이모티콘(이미지뷰)으로 출력하기
 //        adapter.items.add(LogData("00:01:23", "happy"))
 //        adapter.items.add(LogData("00:04:56", "scary"))
 //        adapter.items.add(LogData("00:07:00", "angry"))

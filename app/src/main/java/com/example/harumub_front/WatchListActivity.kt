@@ -3,6 +3,7 @@ package com.example.harumub_front
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.ImageButton
 import android.widget.Toast
@@ -31,22 +32,32 @@ class WatchListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
     private lateinit var retrofitBuilder: RetrofitBuilder
     private lateinit var retrofitInterface : RetrofitInteface
 
+    // 현재 로그인하고 있는 사용자 아이디
+    private val id = intent.getStringExtra("user_id")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_movie_list)
         Toast.makeText(this@WatchListActivity, "여기까진 됨", Toast.LENGTH_SHORT).show()
 
+        // 메인 페이지에서 전달받은 인텐트 데이터 확인
+        if (intent.hasExtra("user_id")) {
+            Log.e("WatchActivity", "메인에서 받아온 id : $id")
+        } else {
+            Log.e("WatchActivity", "가져온 데이터 없음")
+        }
+
         retrofitBuilder = RetrofitBuilder
         retrofitInterface = retrofitBuilder.api
 
         // 현재 로그인하고 있는 사용자 아이디 (수정 필요) --수민 작성
-        var userid = ""
+        // var userid = ""
         var result : List<WatchListResult>
         var titles : Array<String> = emptyArray()
         var posters : Array<String> = emptyArray()
 
         var map = HashMap<String, String>()
-        map.put("id", userid)
+        map.put("id", id!!)
 
         Toast.makeText(this@WatchListActivity, "여기까진 됨2", Toast.LENGTH_SHORT).show()
         var call = retrofitInterface.executeWatchList(map)
@@ -65,11 +76,10 @@ class WatchListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
                     Toast.makeText(this@WatchListActivity, "get movie list successfully", Toast.LENGTH_SHORT).show()
                 }
-                else if (response.code() == 410){
+                else if (response.code() == 400){
                     Toast.makeText(this@WatchListActivity, "get movie list error", Toast.LENGTH_SHORT).show()
                 }
             }
-
             override fun onFailure(call: Call<List<WatchListResult?>>, t: Throwable) {
                 Toast.makeText(this@WatchListActivity, t.message, Toast.LENGTH_SHORT).show()
             }
@@ -92,6 +102,7 @@ class WatchListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         // 최근 감상 기록 (시계) 버튼 클릭 -> 페이지 이동
         recent_button.setOnClickListener{
             val intent = Intent(this, WatchListActivity::class.java)
+            intent.putExtra("user_id", id)
             startActivity(intent)
         }
 
@@ -104,6 +115,7 @@ class WatchListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         // 메인으로 돌아가는 버튼
         list2main.setOnClickListener{
             val intent = Intent(this, MainActivity2::class.java)
+            intent.putExtra("user_id", id)
             startActivity(intent)
         }
     }
@@ -116,6 +128,7 @@ class WatchListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                     Toast.makeText(applicationContext, "사용자 기록보기", Toast.LENGTH_SHORT).show()
 
                     var intent = Intent(applicationContext, WatchListActivity::class.java)
+                    intent.putExtra("user_id", id)
                     startActivityForResult(intent, 0) // + 결과값 전달 // requestCode: 액티비티 식별값 - 원하는 값
                     commit()
                 }
@@ -125,6 +138,7 @@ class WatchListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                     Toast.makeText(applicationContext, "혼자 보기", Toast.LENGTH_SHORT).show()
 
                     var intent = Intent(applicationContext, SearchActivity::class.java)
+                    intent.putExtra("user_id", id)
                     startActivityForResult(intent, 0) // + 결과값 전달 // requestCode: 액티비티 식별값 - 원하는 값
                     commit()
                 }
@@ -134,6 +148,7 @@ class WatchListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                     Toast.makeText(applicationContext, "같이 보기", Toast.LENGTH_SHORT).show()
 
                     var intent = Intent(applicationContext, EnterActivity::class.java)
+                    intent.putExtra("user_id", id)
                     startActivityForResult(intent, 0) // + 결과값 전달 // requestCode: 액티비티 식별값 - 원하는 값
                     commit()
                 }
@@ -149,14 +164,28 @@ class WatchListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             }
             R.id.drawer_Logout -> {
                 with(supportFragmentManager.beginTransaction()) {
-                    Toast.makeText(applicationContext, "로그아웃", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "로그아웃합니다..", Toast.LENGTH_SHORT).show()
+                    val map = HashMap<String, String>()
 
-                    // 로그아웃 기능 구현
+                    val call = retrofitInterface.executeLogout(map)
+                    call!!.enqueue(object : Callback<Void?> {
+                        override fun onResponse(call: Call<Void?>, response: Response<Void?>) {
+                            if (response.code() == 200) {
+                                val result = response.body()
 
+                                var intent = Intent(applicationContext, LoginActivity::class.java) // 두번째 인자에 이동할 액티비티
 
-                    var intent = Intent(applicationContext, LoginActivity::class.java)
-                    startActivityForResult(intent, 0)
-                    commit()
+                                Toast.makeText(this@WatchListActivity, "로그아웃합니다..",
+                                    Toast.LENGTH_LONG).show()
+                                startActivity(intent)
+                            }
+                        }
+
+                        override fun onFailure(call: Call<Void?>, t: Throwable) {
+                            Toast.makeText(this@WatchListActivity, t.message,
+                                Toast.LENGTH_LONG).show()
+                        }
+                    })
                 }
             }
         }

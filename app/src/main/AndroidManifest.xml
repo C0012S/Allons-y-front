@@ -25,7 +25,10 @@
 
         <activity android:name=".WatchListActivity"/>
         <activity android:name=".WatchAloneActivity"/>
+        <activity android:name=".AddreviewActivity"/>
+        <activity android:name=".ResultActivity"/>
         <activity android:name=".MainActivity2"/>
+        <activity android:name=".UserMovieListActivity"/>
         <activity android:name=".SplashActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

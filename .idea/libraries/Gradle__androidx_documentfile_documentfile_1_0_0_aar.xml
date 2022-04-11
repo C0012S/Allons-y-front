@@ -6,13 +6,10 @@
       <root url="file://C:/CookAndroid/.gradle/caches/transforms-3/165214ce86d42ecd047bcb91ededb081/transformed/documentfile-1.0.0/AndroidManifest.xml" />
       <root url="jar://C:/CookAndroid/.gradle/caches/transforms-3/165214ce86d42ecd047bcb91ededb081/transformed/documentfile-1.0.0/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/dcd6dc55b0c4bf90c2a8a51f0f8c51e9/transformed/documentfile-1.0.0/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/165214ce86d42ecd047bcb91ededb081/transformed/documentfile-1.0.0/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/165214ce86d42ecd047bcb91ededb081/transformed/documentfile-1.0.0/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
       <root url="jar://C:/CookAndroid/.gradle/caches/modules-2/files-2.1/androidx.documentfile/documentfile/1.0.0/a1bed5cf96db96bd06a2feade98fe55653811dc8/documentfile-1.0.0-sources.jar!/" />
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.documentfile/documentfile/1.0.0/a1bed5cf96db96bd06a2feade98fe55653811dc8/documentfile-1.0.0-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

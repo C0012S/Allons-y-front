@@ -56,6 +56,7 @@
                         android:textStyle="bold"
                         android:textColor="#808080" />
                     <TextView
+                        android:id="@+id/title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="title"
@@ -76,29 +77,10 @@
                         android:textStyle="bold"
                         android:textColor="#808080" />
                     <TextView
+                        android:id="@+id/genres"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="genres"
-                        android:textSize="20dp"
-                        android:textColor="#808080" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="집중도 - "
-                        android:fontFamily="@font/dohyun"
-                        android:textSize="20dp"
-                        android:textStyle="bold"
-                        android:textColor="#808080" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="00%"
                         android:textSize="20dp"
                         android:textColor="#808080" />
                 </LinearLayout>
@@ -106,33 +88,11 @@
             </LinearLayout>
 
             <ImageView
+                android:id="@+id/poster"
                 android:layout_width="90dp"
                 android:layout_height="120dp"
                 android:src="@drawable/spider"
                 android:layout_marginLeft="10dp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginLeft="30dp"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="인상깊었던 장면 - "
-                android:fontFamily="@font/dohyun"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                android:textColor="#808080" />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="00h 00m"
-                android:textSize="20dp"
-                android:textColor="#808080" />
         </LinearLayout>
 
         <!-- 별점 평가 -->
@@ -149,6 +109,7 @@
             android:layout_marginLeft="30dp" />
 
         <RatingBar
+            android:id="@+id/ratingBar"
             style="@style/Widget.AppCompat.RatingBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -156,7 +117,7 @@
             android:numStars="5"
             android:rating="0"
             android:stepSize="0.5"
-            tools:ignore="SpeakableTextPresentCheck" />
+            android:isIndicator="false" />
 
         <!-- 한줄평 -->
         <TextView
@@ -172,12 +133,13 @@
             android:layout_marginLeft="30dp" />
 
         <EditText
+            android:id="@+id/comment"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginRight ="30dp"
             android:layout_marginLeft="30dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/round_border_green"
+            android:background="@drawable/rectangle"
             android:hint="한줄평을 입력해주세요!"
             android:padding="10dp"
             android:textSize="20dp"/>
@@ -186,6 +148,7 @@
 
 
     <Button
+        android:id="@+id/btnAdd"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

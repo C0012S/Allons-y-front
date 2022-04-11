@@ -8,8 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class RecommendAdapter1: RecyclerView.Adapter<RecommendAdapter1.ViewHolder>() {
-    // 데이터
-    // 영화 api 구성 후 영화 포스터 가져오는 것은 URl이든 뭐든 다른 방식으로 수정해야 함.
+    // 데이터  - 영화 제목, 포스터 url => 모두 String
     private var movie_images = intArrayOf(R.drawable.spider, R.drawable.gucci, R.drawable.about, R.drawable.ic_launcher_foreground, R.drawable.spider, R.drawable.gucci, R.drawable.about)
     private var movie_titles = arrayOf("제목 1", "제목 2", "제목 3", "제목 4", "제목 5", "제목 6", "제목 7")
 

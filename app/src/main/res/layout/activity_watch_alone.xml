@@ -71,7 +71,8 @@
             android:text="감상시작"
             android:textAlignment="gravity"
             android:textColor="#264713"
-            android:textStyle="bold" />
+            android:fontFamily="@font/jua"
+            android:textSize="20sp" />
 
         <android.widget.Button
             android:id="@+id/watch_end"
@@ -89,7 +90,8 @@
             android:text="감상종료"
             android:textAlignment="gravity"
             android:textColor="#264713"
-            android:textStyle="bold" />
+            android:fontFamily="@font/jua"
+            android:textSize="20sp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

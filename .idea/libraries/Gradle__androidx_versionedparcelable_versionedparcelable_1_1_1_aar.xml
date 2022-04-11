@@ -6,13 +6,10 @@
       <root url="file://C:/CookAndroid/.gradle/caches/transforms-3/5b1fab84aeb1f1eabea9cfbb4efa4f2a/transformed/versionedparcelable-1.1.1/AndroidManifest.xml" />
       <root url="jar://C:/CookAndroid/.gradle/caches/transforms-3/5b1fab84aeb1f1eabea9cfbb4efa4f2a/transformed/versionedparcelable-1.1.1/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-3/30a08688879eeed70c033fb87b3604f6/transformed/versionedparcelable-1.1.1/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/5b1fab84aeb1f1eabea9cfbb4efa4f2a/transformed/versionedparcelable-1.1.1/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/5b1fab84aeb1f1eabea9cfbb4efa4f2a/transformed/versionedparcelable-1.1.1/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
       <root url="jar://C:/CookAndroid/.gradle/caches/modules-2/files-2.1/androidx.versionedparcelable/versionedparcelable/1.1.1/d9085927216387af679d18b6f472bc0fc5c7cc81/versionedparcelable-1.1.1-sources.jar!/" />
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.versionedparcelable/versionedparcelable/1.1.1/d9085927216387af679d18b6f472bc0fc5c7cc81/versionedparcelable-1.1.1-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

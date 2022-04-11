@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 
 class RecommendAdapter2: RecyclerView.Adapter<RecommendAdapter2.ViewHolder>() {
@@ -24,6 +25,13 @@ class RecommendAdapter2: RecyclerView.Adapter<RecommendAdapter2.ViewHolder>() {
 
     override fun onBindViewHolder(holder: RecommendAdapter2.ViewHolder, position: Int) { // 데이터 설정
         holder.movieImage.setImageResource(movie_images[position])
+
+        // 해당 아이템 클릭시 유사 사용자 추천 리스트로 이동
+        holder.itemView.setOnClickListener {
+            val intent = Intent(holder.itemView.context, UserMovieListActivity::class.java)
+            // intent.putExtra("user_id", id)
+            ContextCompat.startActivity(holder.itemView.context, intent, null)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -38,7 +46,6 @@ class RecommendAdapter2: RecyclerView.Adapter<RecommendAdapter2.ViewHolder>() {
 
             movieCollectionView.setOnClickListener { // 영화 이미지 버튼 클릭 시
 //                val position: Int = adapterPosition
-
 //                Toast.makeText(movieCollectionView.context, "영화 선택", Toast.LENGTH_LONG).show()
                 Log.d("영화 : ", "선택")
             }

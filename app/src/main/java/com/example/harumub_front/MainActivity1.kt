@@ -2,6 +2,7 @@ package com.example.harumub_front
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.ImageButton
@@ -10,8 +11,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main1.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.util.HashMap
 
 class MainActivity1 : AppCompatActivity() ,NavigationView.OnNavigationItemSelectedListener {
+    private lateinit var retrofitBuilder: RetrofitBuilder
+    private lateinit var retrofitInterface : RetrofitInteface
 
     lateinit var main_this : androidx.drawerlayout.widget.DrawerLayout
     lateinit var drawer_button : ImageButton
@@ -19,9 +26,22 @@ class MainActivity1 : AppCompatActivity() ,NavigationView.OnNavigationItemSelect
     lateinit var drawer_view : NavigationView
     lateinit var btnRecord : Button
 
+    private val id = intent.getStringExtra("user_id")
+    private val name = intent.getStringExtra("user_name")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main1)
+
+        retrofitBuilder = RetrofitBuilder
+        retrofitInterface = retrofitBuilder.api
+
+        // 로그인 페이지에서 전달받은 인텐트 데이터 확인
+        if (intent.hasExtra("user_id") && intent.hasExtra("user_name")) {
+            Log.d("MainActivity1", "로그인에서 받아온 id : $id, name : $name")
+        } else {
+            Log.e("MainActivity1", "가져온 데이터 없음")
+        }
 
         main_this = findViewById(R.id.main_drawer)
         drawer_button = findViewById(R.id.drawer_button) // 드로어 열기(메뉴버튼)
@@ -40,6 +60,7 @@ class MainActivity1 : AppCompatActivity() ,NavigationView.OnNavigationItemSelect
         // 최근 감상 기록 (시계) 버튼 클릭 -> 드로어 메뉴 열기
         recent_button.setOnClickListener{
             val intent = Intent(this, WatchListActivity::class.java)
+            intent.putExtra("user_id", id)
             startActivity(intent)
         }
 
@@ -48,6 +69,7 @@ class MainActivity1 : AppCompatActivity() ,NavigationView.OnNavigationItemSelect
         btnRecord.setOnClickListener { // 감상하기 버튼 클릭 시 영화 검색 페이지로 이동
             //val intent = Intent(this, SearchActivity::class.java) // 영화 검색 페이지
             val intent = Intent(this, MainActivity2::class.java) // 메인 2 페이지
+            intent.putExtra("user_id", id)
             startActivity(intent)
         }
     }
@@ -60,6 +82,7 @@ class MainActivity1 : AppCompatActivity() ,NavigationView.OnNavigationItemSelect
                     Toast.makeText(applicationContext, "사용자 기록보기", Toast.LENGTH_SHORT).show()
 
                     var intent = Intent(applicationContext, WatchListActivity::class.java)
+                    intent.putExtra("user_id", id)
                     startActivityForResult(intent, 0) // + 결과값 전달 // requestCode: 액티비티 식별값 - 원하는 값
                     commit()
                 }
@@ -69,6 +92,7 @@ class MainActivity1 : AppCompatActivity() ,NavigationView.OnNavigationItemSelect
                     Toast.makeText(applicationContext, "혼자 보기", Toast.LENGTH_SHORT).show()
 
                     var intent = Intent(applicationContext, SearchActivity::class.java)
+                    intent.putExtra("user_id", id)
                     startActivityForResult(intent, 0) // + 결과값 전달 // requestCode: 액티비티 식별값 - 원하는 값
                     commit()
                 }
@@ -78,6 +102,7 @@ class MainActivity1 : AppCompatActivity() ,NavigationView.OnNavigationItemSelect
                     Toast.makeText(applicationContext, "같이 보기", Toast.LENGTH_SHORT).show()
 
                     var intent = Intent(applicationContext, EnterActivity::class.java)
+                    intent.putExtra("user_id", id)
                     startActivityForResult(intent, 0) // + 결과값 전달 // requestCode: 액티비티 식별값 - 원하는 값
                     commit()
                 }
@@ -93,14 +118,27 @@ class MainActivity1 : AppCompatActivity() ,NavigationView.OnNavigationItemSelect
             }
             R.id.drawer_Logout -> {
                 with(supportFragmentManager.beginTransaction()) {
-                    Toast.makeText(applicationContext, "로그아웃", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "로그아웃합니다..", Toast.LENGTH_SHORT).show()
+                    val map = HashMap<String, String>()
 
-                    // 로그아웃 기능 구현
+                    val call = retrofitInterface.executeLogout(map)
+                    call!!.enqueue(object : Callback<Void?> {
+                        override fun onResponse(call: Call<Void?>, response: Response<Void?>) {
+                            if (response.code() == 200) {
+                                val result = response.body()
 
+                                var intent = Intent(applicationContext, LoginActivity::class.java) // 두번째 인자에 이동할 액티비티
 
-                    var intent = Intent(applicationContext, LoginActivity::class.java)
-                    startActivityForResult(intent, 0)
-                    commit()
+                                Toast.makeText(this@MainActivity1, "로그아웃합니다..", Toast.LENGTH_LONG).show()
+                                startActivity(intent)
+                            }
+                        }
+
+                        override fun onFailure(call: Call<Void?>, t: Throwable) {
+                            Toast.makeText(this@MainActivity1, t.message,
+                                Toast.LENGTH_LONG).show()
+                        }
+                    })
                 }
             }
         }

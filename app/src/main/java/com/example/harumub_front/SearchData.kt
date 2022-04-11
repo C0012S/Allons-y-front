@@ -4,5 +4,5 @@ import android.media.Image
 
 data class SearchData(
     var movieTitle : String,
-    var image : Int
+    var image : String, // Int > String (poster url)
 )

@@ -18,7 +18,9 @@ import kotlinx.android.synthetic.main.recyclerview_row.view.*
  */
 class SearchAdapter(var context: Context, var unFilteredlist: ArrayList<String>) :
     RecyclerView.Adapter<SearchAdapter.MyViewHolder>(), Filterable {
+
     var filteredList: ArrayList<String>
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.recyclerview_row, parent, false) // RecyclerView에 들어갈 아이템의 레이아웃 설정
         return MyViewHolder(view)
@@ -54,6 +56,7 @@ class SearchAdapter(var context: Context, var unFilteredlist: ArrayList<String>)
 
             itemView.setOnClickListener { // 영화 클릭 시 토스트 메세지
                 Toast.makeText(itemView.context,itemView.textview.text,Toast.LENGTH_LONG).show()
+                // movie id 전달!!
             }
         }
     }

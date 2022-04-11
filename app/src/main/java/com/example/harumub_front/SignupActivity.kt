@@ -3,12 +3,14 @@ package com.example.harumub_front
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.activity_signup.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -37,6 +39,36 @@ class SignupActivity : AppCompatActivity() {
         var btnReq = findViewById<Button>(R.id.btn_request)
         var btnJoin = findViewById<Button>(R.id.btn_join)
         var btnAuth = findViewById<Button>(R.id.btn_auth)
+
+        // 아이디 특수 문자 금지
+        var inputLayout = findViewById<TextInputLayout>(R.id.input_layout)
+        var check_id = inputLayout.getEditText()
+
+        if (check_id != null) {
+            check_id.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    // text가 변경된 후 호출
+                    // s에는 변경 후의 문자열이 담겨 있다.
+                }
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    // text가 변경되기 전 호출
+                    // s에는 변경 전 문자열이 담겨 있다.
+                }
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    // text가 바뀔 때마다 호출
+                    if (s.toString().contains("#")) {
+                        inputLayout.setError("특수 문자는 사용할 수 없습니다.");
+                    } else {
+                        inputLayout.setError(null); // null은 에러 메시지를 지워주는 기능
+                    }
+
+                }
+            })
+        }
+
+        // 비밀번호 암호화(*)
+//        var inputLayout = findViewById<TextInputLayout>(R.id.input_layout)
+//        inputLayout.setPasswordVisibilityToggleEnabled(true)
 
         // 이메일 인증을 위한 변수 선언
         var result : EmailResult?
@@ -78,8 +110,7 @@ class SignupActivity : AppCompatActivity() {
         })
 
 
-
-        // 이메일 전송 버튼 누르면 -> 노드에 map 전송
+        // 이메일 (인증코드) 요청 버튼 누르면 -> 노드에 map 전송
         btnReq.setOnClickListener(object : View.OnClickListener{
 
             var result : EmailResult? = null
@@ -87,7 +118,7 @@ class SignupActivity : AppCompatActivity() {
 
             override fun onClick(v: View?) {
                 var map = HashMap<String, String>()
-                map.put("email", j_email.text.toString())
+                map.put("email", j_email.text.toString()) // 'paramId' of 백 코드
 
                 var call = retrofitInterface.executeEmail(map)
 
@@ -101,7 +132,7 @@ class SignupActivity : AppCompatActivity() {
 
                             Toast.makeText(this@SignupActivity, "email send successfully", Toast.LENGTH_SHORT).show()
                         }
-                        else if (response.code() == 410){
+                        else if (response.code() == 400){
                             Toast.makeText(this@SignupActivity, "email send error", Toast.LENGTH_SHORT).show()
                         }
                     }
@@ -116,7 +147,6 @@ class SignupActivity : AppCompatActivity() {
         // 사용자가 받은 이메일에서 '인증코드'입력 후 -> 인증코드 확인 버튼 누르면
         btnAuth.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-
                 if(j_code.getText().toString() == getcode){
                     Toast.makeText(this@SignupActivity, "emailcode good", Toast.LENGTH_SHORT).show()
                     btnJoin.setEnabled(true)
@@ -133,8 +163,6 @@ class SignupActivity : AppCompatActivity() {
             if(!checkEmail()){ //틀린 경우
                 Toast.makeText(applicationContext,"이메일 형식에 맞게 다시 입력하세요!",Toast.LENGTH_LONG).show()
             }
-
-            // 회원가입 정보 -> DB로 전달해야
 
             // 사용자가 입력한 값들을 String으로 받아오기
             val id = j_id.text.toString()
@@ -166,7 +194,8 @@ class SignupActivity : AppCompatActivity() {
                                 "회원가입이 완료되었습니다.", Toast.LENGTH_LONG).show()
                             val intent = Intent(applicationContext, LoginActivity::class.java)
                             startActivity(intent)
-                        } else if (response.code() == 400) {
+                        }
+                        else if (response.code() == 400) {
                             Toast.makeText(this@SignupActivity, "이미 가입된 정보입니다.",
                                 Toast.LENGTH_LONG).show()
                         }

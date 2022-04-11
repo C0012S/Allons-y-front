@@ -1,6 +1,7 @@
 package com.example.harumub_front
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -51,6 +52,10 @@ class WatchAloneActivity : AppCompatActivity() {
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
 
+    // 현재 로그인하고 있는 사용자 아이디, 선택한 영화 아이디
+    private val id = intent.getStringExtra("user_id")
+    private val movie_title = intent.getStringExtra("movie_title")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_watch_alone)
@@ -59,8 +64,15 @@ class WatchAloneActivity : AppCompatActivity() {
         retrofitInterface = retrofitBuilder.api
 
         // 현재 로그인하고 있는 사용자 아이디 / 영화 아이디 (수정 필요) --수민 작성
-        var userid = ""
-        var movieid = ""
+//        var userid = ""
+//        var movieid = ""
+
+        // 검색 페이지에서 전달받은 인텐트 데이터 확인
+        if (intent.hasExtra("user_id")&&intent.hasExtra("movie_title")) {
+            Log.d("WatchAloneActivity", "검색에서 받아온 id : $id , movie title : $movie_title")
+        } else {
+            Log.e("WatchAloneActivity", "가져온 데이터 없음")
+        }
 
         // Request camera permissions
         if (allPermissionsGranted()) {
@@ -76,8 +88,9 @@ class WatchAloneActivity : AppCompatActivity() {
         // 감상시작 버튼 누르면 -> 노드에 map 전송
         watch_start.setOnClickListener {
             var map = HashMap<String, String>()
-            map.put("id", userid)
-            map.put("movieId", movieid)
+            map.put("id", id!!)
+            map.put("movieTitle", movie_title!!)
+            map.put("signal", "start")
 
             var call = retrofitInterface.executeWatchAloneStart(map)
 
@@ -113,6 +126,9 @@ class WatchAloneActivity : AppCompatActivity() {
 
         // 감상종료 버튼 클릭
         watch_end.setOnClickListener {
+            val intent = Intent(applicationContext, AddreviewActivity::class.java)
+            startActivity(intent)
+
             var map = HashMap<String, String>()
             map.put("signal", "end")
 
@@ -124,9 +140,14 @@ class WatchAloneActivity : AppCompatActivity() {
                         Toast.makeText(this@WatchAloneActivity, "감상종료 신호 보내기 성공", Toast.LENGTH_SHORT).show()
 
                         // 감상 리뷰 작성 페이지로 이동 (액티비티 -> 프래그먼트)
-                        supportFragmentManager.beginTransaction()
-                            .replace(R.id.watch_alone, AddreviewFragment())
-                            .commit()
+//                        supportFragmentManager.beginTransaction()
+//                            .replace(R.id.watch_alone, AddreviewFragment())
+//                            .commit()
+                        val intent = Intent(applicationContext, AddreviewActivity::class.java)
+                        intent.putExtra("user_id", id)
+                        intent.putExtra("movie_id", movie_title)
+                        startActivity(intent)
+
                         Log.d("text : ", "선택")
                     }
                     else if (response.code() == 400){

@@ -3,6 +3,7 @@ package com.example.harumub_front
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
@@ -27,10 +28,19 @@ class EnterActivity: AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private lateinit var retrofitBuilder: RetrofitBuilder
     private lateinit var retrofitInterface : RetrofitInteface
+    // 현재 로그인하고 있는 사용자 아이디, 이름
+    private val id = intent.getStringExtra("user_id")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_enter)
+
+        // 메인 페이지에서 전달받은 인텐트 데이터 확인
+        if (intent.hasExtra("user_id")) {
+            Log.e("EnterActivity", "메인에서 받아온 id : $id")
+        } else {
+            Log.e("EnterActivity", "가져온 데이터 없음")
+        }
 
         retrofitBuilder = RetrofitBuilder
         retrofitInterface = retrofitBuilder.api
@@ -51,6 +61,7 @@ class EnterActivity: AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // 최근 감상 기록 (시계) 버튼 클릭 -> 페이지 이동
         recent_button.setOnClickListener{
             val intent = Intent(this, WatchListActivity::class.java)
+            intent.putExtra("user_id", id)
             startActivity(intent)
         }
 
@@ -68,10 +79,11 @@ class EnterActivity: AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                         var intent = Intent(applicationContext, TogetherActivity::class.java) // 두번째 인자에 이동할 액티비티
                         intent.putExtra("roomCode", result.roomCode)
+                        intent.putExtra("user_id", id)
                         startActivityForResult(intent, 0)
                     }
-                    else if (response.code() == 404) {
-                        Toast.makeText(this@EnterActivity, "404 오류", Toast.LENGTH_LONG).show()
+                    else if (response.code() == 400) {
+                        Toast.makeText(this@EnterActivity, "정의되지 않음", Toast.LENGTH_LONG).show()
                     }
                 }
 
@@ -81,8 +93,8 @@ class EnterActivity: AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             })
 
-            var intent = Intent(applicationContext, TogetherActivity::class.java)
-            startActivityForResult(intent, 0)
+//            var intent = Intent(applicationContext, TogetherActivity::class.java)
+//            startActivityForResult(intent, 0)
         }
 
         // 초대 코드 입력 버튼
@@ -109,6 +121,7 @@ class EnterActivity: AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             Toast.makeText(this@EnterActivity,
                                 "방 코드 : " + getroomCode + " 에 입장합니다.", Toast.LENGTH_LONG).show()
                             val intent = Intent(applicationContext, TogetherActivity::class.java)
+                            intent.putExtra("user_id", id)
                             startActivityForResult(intent, 0)
 
                         } else if (response.code() == 400) {
@@ -141,6 +154,7 @@ class EnterActivity: AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     Toast.makeText(applicationContext, "사용자 기록보기", Toast.LENGTH_SHORT).show()
 
                     val intent = Intent(applicationContext, WatchListActivity::class.java)
+                    intent.putExtra("user_id", id)
                     startActivityForResult(intent, 0) // + 결과값 전달 // requestCode: 액티비티 식별값 - 원하는 값
                     commit()
                 }
@@ -150,6 +164,7 @@ class EnterActivity: AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     Toast.makeText(applicationContext, "혼자 보기", Toast.LENGTH_SHORT).show()
 
                     val intent = Intent(applicationContext, SearchActivity::class.java)
+                    intent.putExtra("user_id", id)
                     startActivityForResult(intent, 0) // + 결과값 전달 // requestCode: 액티비티 식별값 - 원하는 값
                     commit()
                 }
@@ -159,6 +174,7 @@ class EnterActivity: AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     Toast.makeText(applicationContext, "같이 보기", Toast.LENGTH_SHORT).show()
 
                     val intent = Intent(applicationContext, EnterActivity::class.java)
+                    intent.putExtra("user_id", id)
                     startActivityForResult(intent, 0) // + 결과값 전달 // requestCode: 액티비티 식별값 - 원하는 값
                     commit()
                 }
@@ -174,14 +190,28 @@ class EnterActivity: AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.drawer_Logout -> {
                 with(supportFragmentManager.beginTransaction()) {
-                    Toast.makeText(applicationContext, "로그아웃", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "로그아웃합니다..", Toast.LENGTH_SHORT).show()
+                    val map = HashMap<String, String>()
 
-                    // 로그아웃 기능 구현
+                    val call = retrofitInterface.executeLogout(map)
+                    call!!.enqueue(object : Callback<Void?> {
+                        override fun onResponse(call: Call<Void?>, response: Response<Void?>) {
+                            if (response.code() == 200) {
+                                val result = response.body()
 
+                                var intent = Intent(applicationContext, LoginActivity::class.java) // 두번째 인자에 이동할 액티비티
 
-                    val intent = Intent(applicationContext, LoginActivity::class.java)
-                    startActivityForResult(intent, 0)
-                    commit()
+                                Toast.makeText(this@EnterActivity, "로그아웃합니다..",
+                                    Toast.LENGTH_LONG).show()
+                                startActivity(intent)
+                            }
+                        }
+
+                        override fun onFailure(call: Call<Void?>, t: Throwable) {
+                            Toast.makeText(this@EnterActivity, t.message,
+                                Toast.LENGTH_LONG).show()
+                        }
+                    })
                 }
             }
         }
